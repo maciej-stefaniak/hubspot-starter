@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="{{ html_lang }}" {{ html_lang_dir }}>
+
+<head>
+  <title>{{ page_meta.html_title }}</title>
+  <meta charset="utf-8">
+  <meta name="author" content="{{ meta_author }}">
+  <meta name="description" content="{{ page_meta.meta_description }}">
+  <meta name="keywords" content="">
+  <meta name="generator" content="">
+  <title>{{ page_meta.html_title }}</title>
+  {% if site_settings.favicon_src %}<link rel="shortcut icon" href="{{ site_settings.favicon_src }}" />{% endif %} 
+  {{ required_head_tags }}
+  {{ standard_header_includes }} 
+  <!-- 
+    Set URL_TO_CSS_FILE.
+    Example of URL_TO_CSS_FILE: custom/page/project_name/styles.css 
+  -->
+  {{ require_css(get_public_template_url(URL_TO_CSS_FILE)) }} 
+  <!-- 
+    Set URL_TO_JS_FILE.
+    Example of URL_TO_JS_FILE: custom/page/project_name/scripts.js 
+  -->
+  {{ require_js(get_public_template_url("URL_TO_JS_FILE")) }}
+</head>
+
+<body>
+
+  <!-- Most commonly used elements --->
+
+  <!-- Widgets -->
+  {% custom_widget "module_header" widget_name="module_header", white_header=True %}
+
+  <!-- Plain texts -->
+  <h2>{% text "plain_text" label="Plain text, no markers", value="This is default value of really simple text. Notice: no_wrapper parameter makes this text unwrapped in any container" no_wrapper=True %}</h2>
+  
+  <!-- Image source -->
+  <img src="{% image_src 'image' label='Image source' src='https://source.unsplash.com/random' no_wrapper=True %}" alt="" />
+
+  <!-- Rich text -->
+  <div>{% rich_text "rich_text" label="WYSIWYG text", html="<p>This is default value of rich text.</p><p>You can edit it in WYSIWYG editor.</p>" no_wrapper=True %}</div>
+  
+  <!-- Rich text with long default HTML content -->
+  {% widget_block rich_text "long_text" label='Rich text with large HTML content' overrideable=True %}
+    {% widget_attribute "html" %}
+    <blockquote>Blockquote content</blockquote>
+    <p><strong>Strong paragraph</strong></p>
+    <p>Predefined long content</p>
+    {% end_widget_attribute %}
+  {% end_widget_block %}
+
+  <!-- 
+    Images slider with predefined content.
+    export_to_template_context parameter doesn't render element instantly but 
+    makes it available do print using widget_data.image_slider variable
+  -->
+  {% widget_block image_slider "image_slider" label='Images Slider', export_to_template_context=True %}
+    {% widget_attribute "slides" is_json=True %}
+    [
+      {"caption": "Image caption 1", "show_caption": true, "link_url": "#", "alt_text": "Image alt", "img_src": "https://source.unsplash.com/random", "open_in_new_tab": false},
+      {"caption": "Image caption 2", "show_caption": true, "link_url": "#", "alt_text": "Image alt", "img_src": "https://source.unsplash.com/random", "open_in_new_tab": false}
+    ]
+    {% end_widget_attribute %}
+  {% end_widget_block %}
+  {% for slide in widget_data.image_slider.slides %}
+    <section>
+      <img src="{{ slide.img_src }}" alt="{{ slide.alt_text }}" />
+      {{ slide.caption }}
+      <a href="{{ slide.link_url }}" title="{{ slide.alt_text }}">{{ slide.alt_text }}</a>
+    </section>
+  {% endfor %}
+
+  {{ standard_footer_includes }}
+</body>
+</html>

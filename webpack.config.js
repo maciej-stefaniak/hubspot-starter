@@ -55,7 +55,7 @@ module.exports = {
         flatten: true
       },
       {
-        from: './src/templates/**/*.html',
+        from: './src/templates/html/*.html',
         to: './',
         flatten: true
       }

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="{{ html_lang }}" {{ html_lang_dir }}>
+
+<head>
+  <title>{{ page_meta.html_title }}</title>
+  <meta charset="utf-8">
+  <meta name="author" content="{{ meta_author }}">
+  <meta name="description" content="{{ page_meta.meta_description }}">
+  <meta name="keywords" content="">
+  <meta name="generator" content="">
+  <title>{{ page_meta.html_title }}</title>
+  {% if site_settings.favicon_src %}<link rel="shortcut icon" href="{{ site_settings.favicon_src }}" />{% endif %}
+  {{ required_head_tags }}
+  {{ standard_header_includes }} 
+  <!-- 
+    Set URL_TO_CSS_FILE.
+    Example of URL_TO_CSS_FILE: custom/page/project_name/styles.css 
+  -->
+  {{ require_css(get_public_template_url(URL_TO_CSS_FILE)) }} 
+  <!-- 
+    Set URL_TO_JS_FILE.
+    Example of URL_TO_JS_FILE: custom/page/project_name/scripts.js 
+  -->
+  {{ require_js(get_public_template_url("URL_TO_JS_FILE")) }}
+</head>
+
+<body>
+
+<!-- Posts listing view -->
+{% if is_listing_view %}
+
+  <!-- Contents is a predefined and contains all the posts contained in that blog. -->
+  {% set posts = contents %}
+  
+  <!-- Loop through posts -->
+  {% for content in posts %}
+    <section>
+      {% if content.post_list_summary_featured_image %}<a href="{{content.absolute_url}}" style="background-image: url({{ content.post_list_summary_featured_image }})" alt="{{ content.featured_image_alt_text }}"></a>{% endif %}
+      
+      <!-- Truncated title -->
+      <h3>{{ content.name|safe|truncate(80) }}</h3>
+
+      <!-- Truncated content HTML -->
+      <p>{{ content.post_list_content|truncatehtml(130, '') }}</p>
+      
+      <!-- Link to post-->
+      <a href="{{content.absolute_url}}">Link to post</a>
+
+      <!-- Meta data-->
+      {% set comments_number =  content.comment_list|length %}
+      {%if content.blog_post_author %}{{ content.blog_post_author.display_name }} {% endif %}{{ content.publish_date_localized }}
+    </section>
+  {% endfor %}
+    
+  <!-- Pagination-->
+  {% if not simple_list_page %}
+  <div>
+    {% if last_page_num %}
+      <a href="{{ blog_page_link(last_page_num) }}">Previous</a>
+    {% endif %}
+      <a href="{{ group.absolute_url }}/all">All posts</a>
+    {% if next_page_num %}
+      <a href="{{ blog_page_link(next_page_num) }}">Next</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+
+<!-- Single post view -->
+{# post view #}
+{% else %}
+<section>
+  <article>
+    <h1>{{ content.name }}</h1>
+    {% if content.post_list_summary_featured_image %}<img src="{{ content.post_list_summary_featured_image }}" alt="{{ content.featured_image_alt_text }}" />{% endif %}
+    {{ content.post_body }}
+  </article>
+
+  <!-- Share on social media -->
+  <section class="blog-post-share">
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{content.absolute_url}}">Share on Facebook</a>
+    <a href="https://twitter.com/home?status={{content.absolute_url}}">Share on Twitter</a>
+  </section>
+
+  <!-- Find related posts -->
+  {% if content.topic_list %}
+    <section>
+    {% for topic in content.topic_list %}
+        {% if loop.first %}
+          {% set related_posts = blog_recent_topic_posts('default', topic.slug, 6 ) %}
+          {% for content in related_posts %}
+              <!-- Omit current post -->
+              {% unless content.absolute_url == post.absolute_url %}
+                <p><a href="{{content.absolute_url}}">{{ content.name|safe|truncate(80) }}</a></p>
+              {% endunless %}
+          {% endfor %}
+        {% endif %}
+    {% endfor %}
+    </section>
+  {% endif %}
+{% endif %}
+
+
+  {{ standard_footer_includes }}
+</body>
+</html>
