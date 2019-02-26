@@ -1,9 +1,11 @@
-# webpack-starter
+# hubspot-starter
 
-Simple webpack pre-configured starter. Clone repo and develop HTML+JS+CSS with static files (images, fonts etc.) 
+Simple starter for developing Hubspot templates. Includes examples of Hubspot 
+files and ready for use webpack pre-configured dev server. 
+Clone repo and develop  HTML+JS+CSS with static files (images, fonts etc.) 
+Then take example of HubL file and adapt it!
 
-Supports:
-
+Server supports:
 - JS with Babel
 - SASS with autoprefixer
 
@@ -15,7 +17,7 @@ cd webpack-starter
 yarn install
 ```
 
-## Usage
+## Usage of server
 
 Run dev server on http://localhost:8080/
 
@@ -28,6 +30,10 @@ or build site into /dist folder
 ```bash
 yarn build
 ```
+
+## Hubspot
+
+Take example of HubL file, copy it and adapt to your needs
 
 ## License
 
